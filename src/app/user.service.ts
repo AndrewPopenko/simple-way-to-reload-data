@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { merge, Observable, ReplaySubject, scan, Subject, switchMap } from "rxjs";
-import { User, UserMockWebService } from "./user-mock-web-service";
+import { Identity, User, UserMockWebService } from "./user-mock-web-service";
 
 @Injectable({
   providedIn: 'root'
@@ -17,12 +17,7 @@ export class UserService {
     )
       .pipe(
         // @ts-ignore
-        scan((oldValue, currentValue) => {
-          if(!oldValue && !currentValue)
-            throw new Error(`Reload can't run before initial load`);
-
-          return currentValue || oldValue;
-        }),
+        this._reload(),
         switchMap((userId: number) => {
           return this.userWebService.getUserById(userId);
         })
@@ -36,6 +31,15 @@ export class UserService {
 
   reload(): void {
     this.reloadSubj.next();
+  }
+
+  private _reload(selector: Function = Identity) {
+    return scan((oldValue, currentValue) => {
+      if(!oldValue && !currentValue)
+        throw new Error(`Reload can't run before initial load`);
+
+      return selector(currentValue || oldValue);
+    });
   }
 }
 

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from "rxjs";
 
-function Identity<T>(value: T): T {
+export function Identity<T>(value: T): T {
   return value;
 }
 
