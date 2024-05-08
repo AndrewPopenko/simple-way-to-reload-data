@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { merge, Observable, ReplaySubject, scan, Subject, switchMap } from "rxjs";
+import { map, merge, Observable, ReplaySubject, scan, Subject, switchMap } from "rxjs";
 import { Identity, User, UserMockWebService } from "./user-mock-web-service";
 
 @Injectable({
@@ -11,13 +11,11 @@ export class UserService {
   private idRplSubj = new ReplaySubject<number>(1);
 
   userObs$: Observable<User> =
-    merge(
+    this.combineReload(
       this.idRplSubj,
       this.reloadSubj
     )
       .pipe(
-        // @ts-ignore
-        this._reload(),
         switchMap((userId: number) => {
           return this.userWebService.getUserById(userId);
         })
@@ -40,6 +38,17 @@ export class UserService {
 
       return selector(currentValue || oldValue);
     });
+  }
+
+  private combineReload<T>(
+    value$: Observable<T>,
+    reload$: Observable<void>,
+    selector: Function = Identity
+  ): Observable<T> {
+    return merge(value$, reload$).pipe(
+      this._reload(selector),
+      map((value: any) => value as T)
+    );
   }
 }
 
