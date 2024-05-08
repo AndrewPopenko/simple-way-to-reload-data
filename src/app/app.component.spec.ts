@@ -17,13 +17,13 @@ describe('AppComponent', () => {
   it(`should have the 'check-rxjs' title`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    expect(app.title).toEqual('check-rxjs');
+    expect(app.title).toEqual('simple-way-to-reload-data');
   });
 
   it('should render title', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, check-rxjs');
+    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, simple-way-to-reload-data');
   });
 });
