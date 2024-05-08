@@ -22,5 +22,7 @@ export class AppComponent implements OnInit {
 
     this.userService.setId(2);
     this.userService.setId(3);
+    this.userService.reload();
+    this.userService.setId(1);
   }
 }
